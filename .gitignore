@@ -1,0 +1,25 @@
+node_modules/
+dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+
+# IDE - VSCode
+.vscode/*
+
+.env
+.env.*
+package-lock.json
