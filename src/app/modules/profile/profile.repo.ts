@@ -47,4 +47,21 @@ export const profileRepo = {
             }
         );
     },
+
+    findStatusKpiProfile: async (
+        status: string
+    ): Promise<Partial<Profile[]> | null> => {
+        return await DB.Profile.findAll(
+            {
+                where: { status },
+                attributes: {
+                    exclude:
+                        [
+                            'created_at',
+                            'updated_at'
+                        ]
+                }
+            }
+        );
+    },
 };

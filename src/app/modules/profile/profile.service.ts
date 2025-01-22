@@ -55,3 +55,15 @@ export const getAllProfileService = async (userId: number) => {
     }
     return profiles;
 };
+
+export const getProfileStatusKpisService = async (userId: number, status: string) => {
+    const profile: any = await authRepo.findUserById(userId);
+    if (!(profile.role === 'admin')) {
+        return errors('Admin can only view KPIs', 404);
+    }
+    const profiles = await profileRepo.findStatusKpiProfile(status);
+    if (!profiles) {
+        return errors('Profile not found', 404);
+    }
+    return profiles;
+};
