@@ -212,7 +212,28 @@ export const geProfileStatusKpisController = async (
     }
 };
 
+export const geProfileKpisController = async (
+    req: Request,
+    res: Response,
+): Promise<any> => {
+    try {
+        const userId = await getIdfromToken(req.headers);
+        const { status } = req.params;
+        const response: any = await profileService.getProfileKpisService(userId);
+        return res.status(200).json(
+            success(
+                'Profile KPIs fetched',
+                response,
+                200
+            )
+        );
 
+    } catch (error) {
+        return res.status(500).json(
+            errors('Fetching profile KPIs failed', 404)
+        );
+    }
+};
 async function getIdfromToken(headers: any) {
     const authorization: any = headers.authorization;
     const accessToken = authorization.split(' ')[1];

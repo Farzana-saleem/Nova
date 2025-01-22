@@ -10,6 +10,8 @@ profileRouter.put('/', authMiddleware, profileController.updateProfileController
 profileRouter.put('/approve-reject', authMiddleware, profileController.profileStatusController);
 profileRouter.get('/view', authMiddleware, profileController.getAllProfileController);
 profileRouter.get('/kpi/:status', authMiddleware, profileController.geProfileStatusKpisController);
+profileRouter.get('/kpi', authMiddleware, profileController.geProfileKpisController);
+
 
 
 export default profileRouter;

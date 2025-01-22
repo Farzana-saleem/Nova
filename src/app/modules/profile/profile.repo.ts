@@ -64,4 +64,21 @@ export const profileRepo = {
             }
         );
     },
+
+    findKpiProfile: async (
+    ): Promise<any> => {
+
+        const totalCount = await DB.Profile.count();
+        const approvedCount = await DB.Profile.count(
+            { where: { status: 'approved' } },
+        );
+        const pendCount = await DB.Profile.count(
+            { where: { status: 'pending' } },
+        );
+        const rejCount = await DB.Profile.count(
+            { where: { status: 'rejected' } },
+        );
+
+        return { totalCount, approvedCount, rejCount, pendCount }
+    }
 };
