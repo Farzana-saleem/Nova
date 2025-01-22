@@ -1,26 +1,66 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
+import { verifyJWT } from '../../middlewares/jwt.service';
 import { errors, success } from '../../utils/error-handler';
 import * as profileService from './profile.service';
+import { validateCreateProfile } from './profile.validator';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+export const createProfileController = async (
+    req: Request,
+    res: Response,
+): Promise<any> => {
+    try {
+        const userId = await getIdfromToken(req.headers);
+        const profileData = {
+            ...req.body,
+            userId,
+            profileId: `EMP-${userId}`,
+            status: 'pending'
+        }
+        //Error validations
+        const { error } = validateCreateProfile(profileData);
+        if (error) {
+            return res.status(400).json(
+                errors(error?.details[0]?.message, 400)
+            );
+        }
+
+        const response: any = await profileService.createProfileService(profileData);
+        if (response?.error) {
+            return res.status(response.statusCode).json(
+                errors(response?.message, response.statusCode)
+            );
+        }
+        return res.status(200).json(
+            success(
+                'Profile data fetched',
+                {
+                    id: response?.id,
+                    userId: response?.userId,
+                    profileId: response?.profileId,
+                    status: response?.status
+                },
+                200
+            )
+        );
+
+    } catch (error) {
+        return res.status(500).json(
+            errors('Fetching profle details failed', 404)
+        );
+    }
+};
 
 export const getProfileController = async (
     req: Request,
     res: Response,
-    next: NextFunction,
 ): Promise<any> => {
     try {
-        const authorization = req.headers.authorization;
-        if (!authorization) {
-            return res.status(401).json(
-                errors('Autorization not found', 401)
-            );
-        }
-
-        const accessToken = authorization.split(' ')[1];
-        const response: any = await profileService.getProfileService(accessToken);
-
+        const userId = await getIdfromToken(req.headers);
+        const response: any = await profileService.getProfileService(userId);
         return res.status(200).json(
             success(
-                'Profle data fetched',
+                'Profile data fetched',
                 response,
                 200
             )
@@ -31,4 +71,16 @@ export const getProfileController = async (
             errors('Fetching profle details failed', 404)
         );
     }
+};
+
+
+async function getIdfromToken(headers: any) {
+    const authorization: any = headers.authorization;
+    const accessToken = authorization.split(' ')[1];
+    const decodeToken = await verifyJWT(
+        accessToken,
+        JWT_SECRET as string,
+    );
+    const userId = decodeToken.userId;
+    return userId;
 };

@@ -32,7 +32,7 @@ export const authMiddleware = async (
         await decodeToken(authHeader);
         next();
     } catch (error) {
-         res.status(401).json(
+        res.status(401).json(
             errors('Authorization failed', 401)
         );
 
