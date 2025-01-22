@@ -32,4 +32,19 @@ export const profileRepo = {
             }
         });
     },
+
+    findAllProfile: async (
+    ): Promise<Partial<Profile[]> | null> => {
+        return await DB.Profile.findAll(
+            {
+                attributes: {
+                    exclude:
+                        [
+                            'created_at',
+                            'updated_at'
+                        ]
+                }
+            }
+        );
+    },
 };

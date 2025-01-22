@@ -8,5 +8,6 @@ profileRouter.post('/', authMiddleware, profileController.createProfileControlle
 profileRouter.get('/', authMiddleware, profileController.getProfileController);
 profileRouter.put('/', authMiddleware, profileController.updateProfileController);
 profileRouter.put('/approve-reject', authMiddleware, profileController.profileStatusController);
+profileRouter.get('/view', authMiddleware, profileController.getAllProfileController);
 
 export default profileRouter;

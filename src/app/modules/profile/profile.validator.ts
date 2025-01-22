@@ -19,3 +19,11 @@ export const validateUpdateProfile = (profileData: any) => {
     });
     return schema.validate(profileData,);
 };
+
+export const validateStatusProfile = (profileData: any) => {
+    const schema = Joi.object({
+        status: Joi.string().required(),
+        userId: Joi.number().required(),
+    });
+    return schema.validate(profileData,);
+};

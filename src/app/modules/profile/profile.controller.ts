@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { verifyJWT } from '../../middlewares/jwt.service';
 import { errors, success } from '../../utils/error-handler';
 import * as profileService from './profile.service';
-import { validateCreateProfile, validateUpdateProfile } from './profile.validator';
+import { validateCreateProfile, validateStatusProfile, validateUpdateProfile } from './profile.validator';
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const createProfileController = async (
@@ -124,15 +124,21 @@ export const profileStatusController = async (
     res: Response,
 ): Promise<any> => {
     try {
-        const userId = await getIdfromToken(req.headers);
-        const { status } = req.body;
+        //Error validations
+        const { error } = validateStatusProfile({ ...req.body });
+        if (error) {
+            return res.status(400).json(
+                errors(error?.details[0]?.message, 400)
+            );
+        }
+
+        const { userId, status } = req.body;
         if (!(status === 'approved' || status === 'rejected')) {
             return res.status(400).json(
                 errors('Wrong status', 400)
             );
         }
-        const response: any = await profileService.updateProfileService({status}, userId);
-
+        const response: any = await profileService.updateProfileService({ status }, userId);
         if (response?.error) {
             return res.status(response.statusCode).json(
                 errors(response?.message, response.statusCode)
@@ -150,6 +156,28 @@ export const profileStatusController = async (
                     doc: profile?.doc,
                     status: profile?.status
                 },
+                200
+            )
+        );
+
+    } catch (error) {
+        return res.status(500).json(
+            errors('Fetching profle details failed', 404)
+        );
+    }
+};
+
+export const getAllProfileController = async (
+    req: Request,
+    res: Response,
+): Promise<any> => {
+    try {
+        const userId = await getIdfromToken(req.headers);
+        const response: any = await profileService.getAllProfileService(userId);
+        return res.status(200).json(
+            success(
+                'Profile data fetched',
+                response,
                 200
             )
         );

@@ -9,6 +9,10 @@ const authRepo = {
     createUser: async (userData: User): Promise<User> => {
         return await DB.Users.create(userData);
     },
+
+    findUserById: async (id: number): Promise<User | null> => {
+        return await DB.Users.findOne({ where: { id } });
+    },
 };
 
 export default authRepo;
