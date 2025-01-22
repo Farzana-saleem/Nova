@@ -7,5 +7,6 @@ const profileRouter = express.Router();
 profileRouter.post('/', authMiddleware, profileController.createProfileController,);
 profileRouter.get('/', authMiddleware, profileController.getProfileController);
 profileRouter.put('/', authMiddleware, profileController.updateProfileController);
+profileRouter.put('/approve-reject', authMiddleware, profileController.profileStatusController);
 
 export default profileRouter;

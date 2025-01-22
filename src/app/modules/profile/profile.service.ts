@@ -8,8 +8,8 @@ export const createProfileService = async (userData: Partial<Profile | any>) => 
     if (profileExists) {
         return errors(`Profile already exists`, 409)
     }
-    const user = await profileRepo.createProfile(userData);
-    return user;
+    const profile = await profileRepo.createProfile(userData);
+    return profile;
 };
 
 export const updateProfileService = async (userData: Partial<Profile | any>, userId: number) => {
@@ -18,14 +18,14 @@ export const updateProfileService = async (userData: Partial<Profile | any>, use
     if (!profileExists) {
         return errors('Profile not found', 404);
     }
-    const user = await profileRepo.updateProfile(userData, userId);
-    return user;
+    const profile = await profileRepo.updateProfile(userData, userId);
+    return profile;
 };
 
 export const getProfileService = async (userId: number) => {
-    const user = await profileRepo.findProfilebyUserId(userId);
-    if (!user) {
+    const profile = await profileRepo.findProfilebyUserId(userId);
+    if (!profile) {
         return errors('Profile not found', 404);
     }
-    return user;
+    return profile;
 };

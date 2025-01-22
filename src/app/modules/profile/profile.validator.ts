@@ -19,14 +19,3 @@ export const validateUpdateProfile = (profileData: any) => {
     });
     return schema.validate(profileData,);
 };
-
-export const validateLogin = (profileData: any) => {
-    const schema = Joi.object({
-        email: Joi.string().email().required().messages({
-            'string.email': 'Invalid email format',
-            'any.required': 'Email is required',
-        }),
-        password: Joi.string().required(),
-    });
-    return schema.validate(profileData,);
-};

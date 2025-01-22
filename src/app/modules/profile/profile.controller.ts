@@ -59,10 +59,7 @@ export const updateProfileController = async (
 ): Promise<any> => {
     try {
         const userId = await getIdfromToken(req.headers);
-        const profileData = {
-            ...req.body,
 
-        }
         //Error validations
         const { error } = validateUpdateProfile({ ...req.body });
         if (error) {
@@ -111,6 +108,48 @@ export const getProfileController = async (
             success(
                 'Profile data fetched',
                 response,
+                200
+            )
+        );
+
+    } catch (error) {
+        return res.status(500).json(
+            errors('Fetching profle details failed', 404)
+        );
+    }
+};
+
+export const profileStatusController = async (
+    req: Request,
+    res: Response,
+): Promise<any> => {
+    try {
+        const userId = await getIdfromToken(req.headers);
+        const { status } = req.body;
+        if (!(status === 'approved' || status === 'rejected')) {
+            return res.status(400).json(
+                errors('Wrong status', 400)
+            );
+        }
+        const response: any = await profileService.updateProfileService({status}, userId);
+
+        if (response?.error) {
+            return res.status(response.statusCode).json(
+                errors(response?.message, response.statusCode)
+            );
+        }
+        const profile: any = await profileService.getProfileService(userId);
+        return res.status(200).json(
+            success(
+                'Profile status updated',
+                {
+                    id: profile?.id,
+                    userId: profile?.userId,
+                    profileId: profile?.profileId,
+                    name: profile?.name,
+                    doc: profile?.doc,
+                    status: profile?.status
+                },
                 200
             )
         );
