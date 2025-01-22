@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { verifyJWT } from '../../middlewares/jwt.service';
 import { errors, success } from '../../utils/error-handler';
 import * as profileService from './profile.service';
-import { validateCreateProfile } from './profile.validator';
+import { validateCreateProfile, validateUpdateProfile } from './profile.validator';
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const createProfileController = async (
@@ -33,12 +33,61 @@ export const createProfileController = async (
         }
         return res.status(200).json(
             success(
-                'Profile data fetched',
+                'Profile data created',
                 {
                     id: response?.id,
                     userId: response?.userId,
                     profileId: response?.profileId,
+                    name: response?.name,
+                    doc: response?.doc,
                     status: response?.status
+                },
+                200
+            )
+        );
+
+    } catch (error) {
+        return res.status(500).json(
+            errors('Fetching profle details failed', 404)
+        );
+    }
+};
+
+export const updateProfileController = async (
+    req: Request,
+    res: Response,
+): Promise<any> => {
+    try {
+        const userId = await getIdfromToken(req.headers);
+        const profileData = {
+            ...req.body,
+
+        }
+        //Error validations
+        const { error } = validateUpdateProfile({ ...req.body });
+        if (error) {
+            return res.status(400).json(
+                errors(error?.details[0]?.message, 400)
+            );
+        }
+
+        const response: any = await profileService.updateProfileService({ ...req.body }, userId);
+        if (response?.error) {
+            return res.status(response.statusCode).json(
+                errors(response?.message, response.statusCode)
+            );
+        }
+        const profile: any = await profileService.getProfileService(userId);
+        return res.status(200).json(
+            success(
+                'Profile data updated',
+                {
+                    id: profile?.id,
+                    userId: profile?.userId,
+                    profileId: profile?.profileId,
+                    name: profile?.name,
+                    doc: profile?.doc,
+                    status: profile?.status
                 },
                 200
             )
