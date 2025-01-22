@@ -1,4 +1,4 @@
-import { DB } from '../../../config/db';
+import { DB } from '../../../database/db';
 import { Profile } from '../../interfaces/profile.interface';
 
 export const profileRepo = {

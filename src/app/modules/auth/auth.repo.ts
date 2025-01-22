@@ -1,5 +1,5 @@
 import { User } from '../../interfaces/user.interfaces';
-import { DB } from '../../../config/db';
+import { DB } from '../../../database/db';
 
 const authRepo = {
     findUserByEmail: async (email: string): Promise<User | null> => {
