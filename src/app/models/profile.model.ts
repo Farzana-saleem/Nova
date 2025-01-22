@@ -1,27 +1,31 @@
-import { User } from '../../app/interfaces/user.interfaces';
+import { Profile } from '../../app/interfaces/profile.interface';
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 
-export type UserCreationAttributes = Optional<
-    User,
+export type ProfileCreationAttributes = Optional<
+    Profile,
     'id'
 >;
 
-export class UserModel
-    extends Model<User, UserCreationAttributes>
-    implements User {
+export class ProfileModel
+    extends Model<Profile, ProfileCreationAttributes>
+    implements Profile {
     public id!: number;
-    public email!: string;
-    public password!: string;
-    public role!: string;
+    public userId!: number;
+    public profileId!: string;
+    public name!: string;
+    public doc!: string;
+    public status!: string;
     public created_at: string | undefined;
     public updated_at: string | undefined;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+
 }
 
-export default function (sequelize: Sequelize): typeof UserModel {
-    UserModel.init(
+export default function (sequelize: Sequelize): typeof ProfileModel {
+    ProfileModel.init(
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -29,16 +33,25 @@ export default function (sequelize: Sequelize): typeof UserModel {
                 primaryKey: true,
                 autoIncrement: true
             },
-            email: {
+            userId: {
                 allowNull: false,
-                type: DataTypes.STRING,
+                type: DataTypes.INTEGER,
                 unique: true,
             },
-            password: {
+            profileId: {
                 allowNull: false,
                 type: DataTypes.STRING(255),
             },
-            role: {
+            name: {
+                allowNull: false,
+                type: DataTypes.INTEGER,
+                unique: true,
+            },
+            doc: {
+                allowNull: true,
+                type: DataTypes.STRING(255),
+            },
+            status: {
                 allowNull: false,
                 type: DataTypes.STRING(255),
             },
@@ -46,7 +59,7 @@ export default function (sequelize: Sequelize): typeof UserModel {
             updated_at: DataTypes.DATE,
         },
         {
-            tableName: 'users',
+            tableName: 'profiles',
             sequelize,
             createdAt: 'created_at',
             updatedAt: 'updated_at',
@@ -54,5 +67,5 @@ export default function (sequelize: Sequelize): typeof UserModel {
         },
     );
 
-    return UserModel;
+    return ProfileModel;
 }

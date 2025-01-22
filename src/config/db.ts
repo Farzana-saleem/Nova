@@ -1,6 +1,7 @@
 import Sequelize from 'sequelize';
 import dotenv from 'dotenv';
 import userModel from '../app/models/user.model';
+import profileModel from '../app/models/profile.model';
 dotenv.config();
 
 const {
@@ -32,6 +33,7 @@ sequelize.authenticate();
 
 export const DB = {
     Users: userModel(sequelize),
+    Profile: profileModel(sequelize),
     sequelize, // connection instance (RAW queries)
     Sequelize, // library
 };
