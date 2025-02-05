@@ -3,7 +3,7 @@ import cors from 'cors';
 import router from './app/routes/routes';
 import dotenv from 'dotenv';
 import { errorHandler } from './app/utils/error-handler';
-import { DB } from './config/db';
+import { DB } from './database/db';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
